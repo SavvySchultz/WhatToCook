@@ -9,16 +9,54 @@ function showPage(pageId, clickedButton) {
   clickedButton.classList.add("active");
 }
 
+const recipes = [
+  {
+    name: "Egg Toast",
+    ingredients: ["eggs", "bread", "butter", "salt", "pepper"],
+    description: "A quick breakfast or snack using just a few basics.",
+    instructions: ["Toast the bread.", "Cook the eggs.", "Put eggs on toast and season lightly."],
+    link: "https://www.allrecipes.com/"
+  },
+  {
+    name: "Cheese Sandwich",
+    ingredients: ["bread", "cheese", "butter"],
+    description: "A simple comfort food that’s warm and melty.",
+    instructions: ["Butter the bread.", "Add cheese.", "Cook until golden brown."],
+    link: "https://www.allrecipes.com/"
+  },
+  {
+    name: "Butter Rice",
+    ingredients: ["rice", "butter", "salt"],
+    description: "Soft, simple rice with a little flavor boost.",
+    instructions: ["Cook the rice.", "Stir in butter.", "Add a pinch of salt and serve."],
+    link: "https://www.allrecipes.com/"
+  },
+  {
+    name: "Pasta Bowl",
+    ingredients: ["pasta", "butter", "cheese", "salt", "pepper"],
+    description: "Easy pasta when you want something filling fast.",
+    instructions: ["Cook pasta.", "Add butter and cheese.", "Season and mix well."],
+    link: "https://www.allrecipes.com/"
+  },
+  {
+    name: "Veggie Omelette",
+    ingredients: ["eggs", "spinach", "onion", "tomatoes", "cheese"],
+    description: "A fresh, colorful meal that feels like a win.",
+    instructions: ["Whisk eggs.", "Cook veggies.", "Add eggs and cheese, then fold."],
+    link: "https://www.allrecipes.com/"
+  }
+];
+
 const btn = document.getElementById("findRecipeBtn");
 const input = document.getElementById("ingredientsInput");
 const results = document.getElementById("results");
 const encouragement = document.getElementById("encouragement");
 
 const encouragementMessages = [
-  "You’re doing amazing — tiny ingredients can still make a great meal 💙",
-  "Cooking doesn’t have to be fancy to be delicious ✨",
-  "One step at a time — you’ve got this 💜",
-  "Your fridge is full of possibilities!"
+  "You’re doing amazing — you already have enough to start 💙",
+  "Simple food can still be really good ✨",
+  "You’ve got this. Let’s make dinner easier 💜",
+  "A few ingredients is all it takes to begin!"
 ];
 
 function normalizeList(text) {
@@ -29,48 +67,62 @@ function normalizeList(text) {
     .filter(Boolean);
 }
 
-function renderMealCard(meal, userIngredients) {
-  const ingredients = [];
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = meal[`strIngredient${i}`];
-    const measure = meal[`strMeasure${i}`];
-    if (ingredient && ingredient.trim()) {
-      ingredients.push({
-        ingredient: ingredient.trim(),
-        measure: measure ? measure.trim() : ""
-      });
-    }
+function renderRecipes(userIngredients) {
+  const matchedRecipes = recipes
+    .map(recipe => {
+      const matches = recipe.ingredients.filter(ingredient =>
+        userIngredients.includes(ingredient.toLowerCase())
+      );
+
+      const isValid = matches.length > 0 && recipe.ingredients.every(ingredient =>
+        userIngredients.includes(ingredient.toLowerCase())
+      );
+
+      return {
+        ...recipe,
+        matches,
+        isValid
+      };
+    })
+    .filter(recipe => recipe.isValid)
+    .sort((a, b) => b.matches.length - a.matches.length);
+
+  if (matchedRecipes.length === 0) {
+    results.innerHTML = `
+      <div class="empty-state">
+        <h4>No recipe matches yet</h4>
+        <p>Try a few common items like eggs, bread, rice, pasta, cheese, butter, spinach, or tomatoes.</p>
+      </div>
+    `;
+    return;
   }
 
-  const matchCount = ingredients.filter(item =>
-    userIngredients.includes(item.ingredient.toLowerCase())
-  ).length;
-
-  const matchScore = Math.round((matchCount / Math.max(ingredients.length, 1)) * 100);
-
-  return `
+  results.innerHTML = matchedRecipes.map(recipe => `
     <article class="recipe-card">
-      <img class="recipe-image" src="${meal.strMealThumb}" alt="${meal.strMeal}">
       <div class="recipe-body">
-        <h3>${meal.strMeal}</h3>
-        <div class="match">${matchCount} match${matchCount !== 1 ? "es" : ""} • ${matchScore}%</div>
-        <p><strong>Category:</strong> ${meal.strCategory || "Recipe"}</p>
-        <p>${meal.strInstructions.slice(0, 160)}...</p>
+        <h3>${recipe.name}</h3>
+        <div class="match">Uses only your ingredients</div>
+        <p>${recipe.description}</p>
 
-        <strong>Ingredients:</strong>
+        <strong>Ingredients used:</strong>
         <ul>
-          ${ingredients.slice(0, 6).map(item => `<li>${item.measure ? item.measure + " " : ""}${item.ingredient}</li>`).join("")}
+          ${recipe.ingredients.map(item => `<li>${item}</li>`).join("")}
         </ul>
 
+        <strong>Quick steps:</strong>
+        <ol>
+          ${recipe.instructions.map(step => `<li>${step}</li>`).join("")}
+        </ol>
+
         <div class="recipe-actions">
-          <a class="link-btn open" href="${meal.strSource || meal.strYoutube || `https://www.themealdb.com/meal/${meal.idMeal}`}" target="_blank" rel="noopener noreferrer">View full recipe</a>
+          <a class="link-btn open" href="${recipe.link}" target="_blank" rel="noopener noreferrer">Learn more</a>
         </div>
       </div>
     </article>
-  `;
+  `).join("");
 }
 
-async function searchRecipes() {
+btn.addEventListener("click", () => {
   const userIngredients = normalizeList(input.value);
 
   if (userIngredients.length === 0) {
@@ -86,58 +138,5 @@ async function searchRecipes() {
   const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
   encouragement.innerHTML = `<p>${randomMessage}</p>`;
 
-  results.innerHTML = `
-    <div class="empty-state">
-      <h4>Searching recipes...</h4>
-      <p>Hang tight — we’re finding tasty ideas for you.</p>
-    </div>
-  `;
-
-  try {
-    const queries = [...new Set(userIngredients)];
-    const allMeals = new Map();
-
-    for (const ingredient of queries.slice(0, 5)) {
-      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`);
-      const data = await res.json();
-
-      if (data.meals) {
-        data.meals.forEach(meal => allMeals.set(meal.idMeal, meal));
-      }
-    }
-
-    const mealsArray = Array.from(allMeals.values()).slice(0, 12);
-
-    if (mealsArray.length === 0) {
-      results.innerHTML = `
-        <div class="empty-state">
-          <h4>No recipes found yet</h4>
-          <p>Try ingredients like chicken, eggs, rice, pasta, tuna, or potatoes.</p>
-        </div>
-      `;
-      return;
-    }
-
-    const detailedMeals = await Promise.all(
-      mealsArray.map(async meal => {
-        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`);
-        const data = await res.json();
-        return data.meals ? data.meals[0] : null;
-      })
-    );
-
-    const finalMeals = detailedMeals.filter(Boolean);
-
-    results.innerHTML = finalMeals.map(meal => renderMealCard(meal, userIngredients)).join("");
-  } catch (error) {
-    console.error(error);
-    results.innerHTML = `
-      <div class="empty-state">
-        <h4>Oops — something went wrong</h4>
-        <p>Check your internet connection and try again.</p>
-      </div>
-    `;
-  }
-}
-
-btn.addEventListener("click", searchRecipes);
+  renderRecipes(userIngredients);
+});
