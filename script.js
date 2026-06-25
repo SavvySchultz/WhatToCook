@@ -68,28 +68,8 @@ const recipes = [
       "Stir in the egg and serve."
     ],
     link: "https://www.allrecipes.com/recipe/23037/quick-and-easy-fried-rice/"
-  },
-  {
-    name: "Toasty Breakfast Wrap",
-    ingredients: ["eggs", "bread", "cheese", "spinach", "butter"],
-    time: "12 min",
-    difficulty: "Easy",
-    image: "https://images.unsplash.com/photo-1521305916504-4a1121188589?auto=format&fit=crop&w=900&q=80",
-    description: "A bright, filling breakfast that feels like a win.",
-    instructions: [
-      "Cook eggs in a pan.",
-      "Warm bread or a wrap.",
-      "Add eggs, cheese, and spinach.",
-      "Fold it up and toast lightly."
-    ],
-    link: "https://www.delish.com/cooking/recipe-ideas/"
   }
 ];
-
-const btn = document.getElementById("findRecipeBtn");
-const input = document.getElementById("ingredientsInput");
-const results = document.getElementById("results");
-const encouragement = document.getElementById("encouragement");
 
 const encouragementMessages = [
   "You’re doing amazing — tiny ingredients can still make a great meal 💙",
@@ -98,6 +78,11 @@ const encouragementMessages = [
   "One step at a time — you’ve got this 💜",
   "Your fridge is full of possibilities!"
 ];
+
+const btn = document.getElementById("findRecipeBtn");
+const input = document.getElementById("ingredientsInput");
+const results = document.getElementById("results");
+const encouragement = document.getElementById("encouragement");
 
 function normalizeList(text) {
   return text
@@ -118,7 +103,6 @@ function renderRecipes(userIngredients) {
     .map(recipe => {
       const matchCount = getMatchCount(recipe.ingredients, userIngredients);
       const matchScore = Math.round((matchCount / recipe.ingredients.length) * 100);
-
       return { ...recipe, matchCount, matchScore };
     })
     .filter(recipe => recipe.matchCount > 0)
@@ -139,11 +123,11 @@ function renderRecipes(userIngredients) {
       <img class="recipe-image" src="${recipe.image}" alt="${recipe.name}">
       <div class="recipe-body">
         <h3>${recipe.name}</h3>
-        <div class="match">${recipe.matchCount} ingredient match${recipe.matchCount > 1 ? "es" : ""} • ${recipe.matchScore}%</div>
-        <div class="recipe-meta">⏱ ${recipe.time} • ⭐ ${recipe.difficulty}</div>
+        <div class="match">${recipe.matchCount} match${recipe.matchCount > 1 ? "es" : ""} • ${recipe.matchScore}%</div>
         <p>${recipe.description}</p>
+        <p><strong>Time:</strong> ${recipe.time} • <strong>Level:</strong> ${recipe.difficulty}</p>
 
-        <strong>Uses:</strong>
+        <strong>Ingredients:</strong>
         <ul>
           ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join("")}
         </ul>
