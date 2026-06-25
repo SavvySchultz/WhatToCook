@@ -10,93 +10,130 @@
   <div class="app-shell">
     <header class="topbar">
       <div class="brand">
-        <div class="logo">🍽️</div>
+        <div class="logo">🍳</div>
         <div>
           <h1>Fridge Buddy</h1>
-          <p>Turn what you have into meal ideas</p>
+          <p>Make something delicious from what you already have</p>
         </div>
       </div>
     </header>
 
     <nav class="tabbar">
       <button class="tab-btn active" onclick="showPage('home', this)">Home</button>
-      <button class="tab-btn" onclick="showPage('nutrition', this)">Nutrition</button>
-      <button class="tab-btn" onclick="showPage('tips', this)">Tips</button>
+      <button class="tab-btn" onclick="showPage('nutrition', this)">Nutrition Facts</button>
+      <button class="tab-btn" onclick="showPage('about', this)">Tips</button>
     </nav>
 
     <main class="content">
-      <!-- HOME -->
+      <!-- HOME PAGE -->
       <section id="home" class="page active">
-        <div class="hero card">
-          <h2>What’s in your fridge?</h2>
-          <p>Enter ingredients separated by commas. Use as many or as few as you want.</p>
+        <div class="card hero">
+          <h2>What’s in your fridge today?</h2>
+          <p>Type any ingredients you have. Use as many or as few as you want — we’ll find recipes that match.</p>
 
-          <textarea id="ingredientsInput" placeholder="eggs, cheese, bread, milk, spinach"></textarea>
+          <textarea id="ingredientsInput" placeholder="eggs, cheese, bread, spinach, chicken, rice"></textarea>
 
-          <button id="findRecipeBtn" class="primary-btn">Find Recipes</button>
+          <button id="findRecipeBtn" class="primary-btn">Find Recipe Ideas</button>
 
-          <div id="result" class="result">
-            <p>Your recipe suggestions will appear here.</p>
+          <div id="encouragement" class="encouragement">
+            <p>You’ve got this — even simple ingredients can make a great meal ✨</p>
           </div>
         </div>
 
         <div class="card">
-          <h3>Quick Ingredient Ideas</h3>
-          <div class="chips">
-            <span>Eggs</span>
-            <span>Cheese</span>
-            <span>Bread</span>
-            <span>Milk</span>
-            <span>Rice</span>
-            <span>Pasta</span>
-            <span>Chicken</span>
-            <span>Tomatoes</span>
-            <span>Onion</span>
-            <span>Butter</span>
+          <div class="section-title">
+            <h3>Recipe Matches</h3>
+            <p>Choose to stay in the app or open the full recipe.</p>
+          </div>
+          <div id="results" class="recipe-grid">
+            <div class="empty-state">
+              <h4>No recipe yet</h4>
+              <p>Enter ingredients above and hit the button to see ideas.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- NUTRITION -->
+      <!-- NUTRITION PAGE -->
       <section id="nutrition" class="page">
         <div class="card">
-          <h2>Nutrition Guide</h2>
-          <p>Here’s a simple way to think about balanced meals.</p>
+          <h2>Nutrition Facts</h2>
+          <p>Here’s a simple guide to help you build a balanced meal.</p>
 
-          <div class="grid">
-            <div class="info-box blue">
+          <div class="nutrition-grid">
+            <div class="nutrient-card blue">
               <h3>Protein</h3>
-              <p>Eggs, chicken, beans, yogurt, cheese, tuna</p>
+              <p>Helps keep you full and supports your body.</p>
+              <ul>
+                <li>Eggs</li>
+                <li>Chicken</li>
+                <li>Beans</li>
+                <li>Yogurt</li>
+                <li>Cheese</li>
+                <li>Tuna</li>
+              </ul>
             </div>
 
-            <div class="info-box purple">
-              <h3>Carbs</h3>
-              <p>Bread, rice, pasta, potatoes, oats</p>
+            <div class="nutrient-card purple">
+              <h3>Carbohydrates</h3>
+              <p>Give you energy for the day.</p>
+              <ul>
+                <li>Bread</li>
+                <li>Rice</li>
+                <li>Pasta</li>
+                <li>Oats</li>
+                <li>Potatoes</li>
+              </ul>
             </div>
 
-            <div class="info-box blue">
+            <div class="nutrient-card blue">
               <h3>Healthy Fats</h3>
-              <p>Avocado, olive oil, peanut butter, nuts</p>
+              <p>Support the brain and help meals feel satisfying.</p>
+              <ul>
+                <li>Avocado</li>
+                <li>Olive oil</li>
+                <li>Nuts</li>
+                <li>Peanut butter</li>
+                <li>Seeds</li>
+              </ul>
             </div>
 
-            <div class="info-box purple">
+            <div class="nutrient-card purple">
               <h3>Fruits & Veggies</h3>
-              <p>Spinach, carrots, tomatoes, onions, apples, bananas</p>
+              <p>Add fiber, color, vitamins, and crunch.</p>
+              <ul>
+                <li>Spinach</li>
+                <li>Tomatoes</li>
+                <li>Carrots</li>
+                <li>Onions</li>
+                <li>Apples</li>
+                <li>Bananas</li>
+              </ul>
             </div>
+          </div>
+
+          <div class="tip-banner">
+            <h3>Easy meal formula</h3>
+            <p>Try to build a meal with: <strong>protein + carb + fruit/veggie + optional fat</strong>.</p>
           </div>
         </div>
       </section>
 
-      <!-- TIPS -->
-      <section id="tips" class="page">
+      <!-- TIPS PAGE -->
+      <section id="about" class="page">
         <div class="card">
-          <h2>App Tips</h2>
+          <h2>Helpful Tips</h2>
           <ul class="tips-list">
-            <li>Type ingredients separated by commas.</li>
-            <li>You do not need to use every ingredient.</li>
-            <li>The app opens recipe ideas in Pinterest.</li>
-            <li>Try simple foods first: eggs, bread, rice, pasta.</li>
+            <li>Don’t worry if you’re missing ingredients — recipes can be flexible.</li>
+            <li>Start with simple foods like eggs, rice, pasta, bread, or cheese.</li>
+            <li>Use the open link if you want full directions from the source.</li>
+            <li>Little wins count. Cooking something from your fridge is awesome.</li>
+            <li>Try mixing one protein, one carb, and one veggie for a balanced meal.</li>
           </ul>
+
+          <div class="encouragement big">
+            <p>Small ingredients. Big possibilities. You are doing great 💙💜</p>
+          </div>
         </div>
       </section>
     </main>
